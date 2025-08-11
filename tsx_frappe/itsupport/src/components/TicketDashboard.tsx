@@ -1,87 +1,85 @@
-import { useState } from 'react';
-import { ChevronDown, ChevronRight, Plus, Search, Filter, MoreHorizontal } from 'lucide-react';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { TicketGroup } from './TicketGroup';
+import { Plus, Search, Filter, MoreHorizontal } from "lucide-react";
+import { Button } from "./ui/button";
+import { TicketGroup } from "./TicketGroup";
 
 const mockTicketData = [
   {
-    id: 'AS',
-    name: 'AS',
-    color: 'bg-red-500',
+    id: "AS",
+    name: "AS",
+    color: "bg-red-500",
     count: 2,
     tickets: [
       {
         id: 1,
         agent: null,
-        status: 'open',
-        priority: 'high',
-        creationDate: 'May 2, 24',
+        status: "open",
+        priority: "high",
+        creationDate: "May 2, 24",
         resolutionDate: null,
       },
       {
         id: 2,
         agent: null,
-        status: 'pending',
-        priority: 'medium',
-        creationDate: 'Apr 28, 24',
-        resolutionDate: 'May 1, 24',
+        status: "pending",
+        priority: "medium",
+        creationDate: "Apr 28, 24",
+        resolutionDate: "May 1, 24",
       },
     ],
   },
   {
-    id: 'OP',
-    name: 'OP',
-    color: 'bg-blue-500',
+    id: "OP",
+    name: "OP",
+    color: "bg-blue-500",
     count: 1,
     tickets: [
       {
         id: 3,
-        agent: 'John Doe',
-        status: 'in-progress',
-        priority: 'high',
-        creationDate: 'May 1, 24',
+        agent: "John Doe",
+        status: "in-progress",
+        priority: "high",
+        creationDate: "May 1, 24",
         resolutionDate: null,
       },
     ],
   },
   {
-    id: 'WR',
-    name: 'WR',
-    color: 'bg-purple-500',
+    id: "WR",
+    name: "WR",
+    color: "bg-purple-500",
     count: 1,
     tickets: [
       {
         id: 4,
-        agent: 'Jane Smith',
-        status: 'waiting',
-        priority: 'low',
-        creationDate: 'Apr 29, 24',
+        agent: "Jane Smith",
+        status: "waiting",
+        priority: "low",
+        creationDate: "Apr 29, 24",
         resolutionDate: null,
       },
     ],
   },
   {
-    id: 'RT',
-    name: 'RT',
-    color: 'bg-green-500',
+    id: "RT",
+    name: "RT",
+    color: "bg-green-500",
     count: 2,
     tickets: [
       {
         id: 5,
         agent: null,
-        status: 'resolved',
-        priority: 'medium',
-        creationDate: 'Apr 10, 24',
-        resolutionDate: 'Apr 15, 24',
+        status: "resolved",
+        priority: "medium",
+        creationDate: "Apr 10, 24",
+        resolutionDate: "Apr 15, 24",
       },
       {
         id: 6,
-        agent: 'Mike Johnson',
-        status: 'closed',
-        priority: 'low',
-        creationDate: 'Apr 5, 24',
-        resolutionDate: 'Apr 7, 24',
+        agent: "Mike Johnson",
+        status: "closed",
+        priority: "low",
+        creationDate: "Apr 5, 24",
+        resolutionDate: "Apr 7, 24",
       },
     ],
   },
@@ -94,31 +92,55 @@ export function TicketDashboard() {
       <div className="bg-slate-800 border-b border-slate-700 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
+            <Button
+              variant="outline"
+              size="sm"
+              className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600"
+            >
               <Plus className="w-4 h-4 mr-1" />
               New ticket
             </Button>
-            
-            <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white">
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-slate-300 hover:text-white"
+            >
               <Search className="w-4 h-4 mr-1" />
               Search
             </Button>
-            
-            <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white">
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-slate-300 hover:text-white"
+            >
               <Filter className="w-4 h-4 mr-1" />
               Filter
             </Button>
-            
-            <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white">
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-slate-300 hover:text-white"
+            >
               📊 Group by
             </Button>
-            
-            <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white">
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-slate-300 hover:text-white"
+            >
               <MoreHorizontal className="w-4 h-4" />
             </Button>
           </div>
-          
-          <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white">
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-slate-300 hover:text-white"
+          >
             ⬆
           </Button>
         </div>
@@ -141,7 +163,7 @@ export function TicketDashboard() {
         {mockTicketData.map((group) => (
           <TicketGroup key={group.id} group={group} />
         ))}
-        
+
         <div className="p-4">
           <Button
             variant="ghost"

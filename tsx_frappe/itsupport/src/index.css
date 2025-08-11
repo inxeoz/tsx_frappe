@@ -1,9 +1,23 @@
+/* Scoped CSS for IT Support Dashboard */
+/* This prevents conflicts when integrating into other applications like Frappe */
+
+/* Import Tailwind CSS but we'll scope it using the important strategy */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Override Tailwind's global styles to only apply within our component */
 @layer base {
-  :root {
+    /* Reset Tailwind's global styles - we'll apply them only to our scoped container */
+    html,
+    body {
+        /* Don't apply global styles */
+    }
+}
+
+/* Scoped CSS variables - these will only affect our component */
+.it-support-dashboard {
+    /* Color scheme variables */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -36,9 +50,39 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 212.7 26.8% 83.9%;
-  }
 
-  .dark {
+    /* Base styles for our component */
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family:
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        Arial,
+        "Noto Sans",
+        sans-serif,
+        "Apple Color Emoji",
+        "Segoe UI Emoji",
+        "Segoe UI Symbol",
+        "Noto Color Emoji";
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+
+    /* Isolation to prevent style bleeding */
+    isolation: isolate;
+    contain: layout style;
+    position: relative;
+}
+
+/* Dark theme support (though our theme is already dark) */
+.it-support-dashboard.dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     --card: 222.2 84% 4.9%;
@@ -61,7 +105,7 @@
     --ring: 212.7 26.8% 83.9%;
     --switch-background: 217.2 32.6% 17.5%;
 
-    /* Sidebar variables */
+    /* Sidebar variables for dark theme */
     --sidebar-background: 222.2 84% 4.9%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 210 40% 98%;
@@ -70,53 +114,148 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: 212.7 26.8% 83.9%;
-  }
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+/* Scoped reset for our component */
+.it-support-dashboard,
+.it-support-dashboard *,
+.it-support-dashboard *::before,
+.it-support-dashboard *::after {
+    box-sizing: border-box;
+    border-width: 0;
+    border-style: solid;
+    border-color: hsl(var(--border));
 }
 
-/* Custom styles for the dashboard */
-.bg-slate-850 {
-  background-color: #1e293b;
+.it-support-dashboard * {
+    /* Override Tailwind's global border color only within our component */
+    border-color: hsl(var(--border));
 }
 
-/* Fix for line-clamp utilities */
-.line-clamp-1 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
+/* Custom dashboard-specific styles */
+.it-support-dashboard .bg-slate-850 {
+    background-color: #1e293b;
 }
 
-.line-clamp-2 {
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+/* Line clamp utilities scoped to our component */
+.it-support-dashboard .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+.it-support-dashboard .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+/* Custom scrollbar styles scoped to our component */
+.it-support-dashboard ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
 }
 
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--border));
-  border-radius: 3px;
+.it-support-dashboard ::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--muted-foreground));
+.it-support-dashboard ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+}
+
+.it-support-dashboard ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
+}
+
+/* Ensure container utility works within our scope */
+.it-support-dashboard .container {
+    width: 100%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 2rem;
+    padding-left: 2rem;
+}
+
+/* Responsive container */
+@media (min-width: 640px) {
+    .it-support-dashboard .container {
+        max-width: 640px;
+    }
+}
+
+@media (min-width: 768px) {
+    .it-support-dashboard .container {
+        max-width: 768px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .it-support-dashboard .container {
+        max-width: 1024px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .it-support-dashboard .container {
+        max-width: 1280px;
+    }
+}
+
+@media (min-width: 1536px) {
+    .it-support-dashboard .container {
+        max-width: 1536px;
+    }
+}
+
+/* Ensure our component doesn't inherit problematic styles from parent */
+.it-support-dashboard {
+    all: initial;
+    /* Reapply the essential styles after the reset */
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family:
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        Arial,
+        "Noto Sans",
+        sans-serif;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    isolation: isolate;
+    contain: layout style;
+    position: relative;
+}
+
+/* Ensure child elements get proper inheritance */
+.it-support-dashboard * {
+    font-family: inherit;
+    color: inherit;
+}
+
+/* Focus styles scoped to our component */
+.it-support-dashboard *:focus {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+}
+
+.it-support-dashboard *:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* Selection styles scoped to our component */
+.it-support-dashboard ::selection {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
 }

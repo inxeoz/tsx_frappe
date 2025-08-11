@@ -1,9 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  important: ".it-support-dashboard", // Scope all Tailwind classes to this selector
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
@@ -81,4 +79,4 @@ export default {
   },
   plugins: [],
   darkMode: "class",
-}
+};
