@@ -1,0 +1,22 @@
+{
+  "content": null,
+  "creation": "2025-08-11 15:40:36.710656",
+  "docstatus": 0,
+  "doctype": "Page",
+  "icon": "",
+  "idx": 0,
+  "modified": "2025-08-11 15:40:36.710656",
+  "modified_by": "Administrator",
+  "module": "Tsx Frappe",
+  "name": "itsupport",
+  "owner": "Administrator",
+  "page_name": "itsupport",
+  "roles": [],
+  "script": null,
+  "standard": "Yes",
+  "style": null,
+  "system_page": 0,
+  "title": "itsupport_title",
+  "is_hidden": 0,
+  "public": 1
+}
