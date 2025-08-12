@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Plus, Search, Filter, MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
 import { KanbanColumn } from "./KanbanColumn";
@@ -11,6 +11,8 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  DragCancelEvent,
+  closestCorners,
 } from "@dnd-kit/core";
 
 import { KanbanCard } from "./KanbanCard";
@@ -41,14 +43,14 @@ const initialTicketData: Ticket[] = [
   },
   {
     id: 2,
-    title: "job issue",
-    description: "",
+    title: "Job issue",
+    description: "Critical server downtime affecting production systems",
     agent: null,
     status: "reviewed",
     priority: "high",
     creationDate: "Aug 7",
     resolutionDate: null,
-    tags: ["Reviewed"],
+    tags: ["Reviewed", "High"],
   },
   {
     id: 3,
@@ -72,16 +74,16 @@ const initialTicketData: Ticket[] = [
     priority: "low",
     creationDate: "Apr 10, 2024",
     resolutionDate: "Apr 15, 2024",
-    tags: ["Removed"],
+    tags: ["Resolved"],
   },
   {
     id: 5,
-    title: "rt",
-    description: "Help me pls",
+    title: "Network connectivity issues",
+    description: "Help me please - can't connect to the office network",
     agent: null,
     status: "new",
     priority: "high",
-    creationDate: "Critical",
+    creationDate: "Nov 15, 2024",
     resolutionDate: null,
     tags: ["New", "High"],
   },
@@ -123,7 +125,7 @@ const kanbanColumns = [
     title: "Returned",
     color: "bg-cyan-500",
   },
-];
+] as const;
 
 export function KanbanBoard() {
   const [tickets, setTickets] = useState<Ticket[]>(initialTicketData);
@@ -139,44 +141,56 @@ export function KanbanBoard() {
     }),
   );
 
-  const getTicketsForColumn = useCallback(
-    (columnId: string) => {
-      const filteredTickets = tickets.filter(
-        (ticket) => ticket.status === columnId,
+  // Memoize filtered tickets for better performance
+  const filteredTicketsByColumn = useMemo(() => {
+    const columnTickets: Record<string, Ticket[]> = {};
+
+    kanbanColumns.forEach((column) => {
+      const columnTicketList = tickets.filter(
+        (ticket) => ticket.status === column.id,
       );
 
       if (!searchQuery) {
-        return filteredTickets;
+        columnTickets[column.id] = columnTicketList;
+      } else {
+        const query = searchQuery.toLowerCase();
+        columnTickets[column.id] = columnTicketList.filter(
+          (ticket) =>
+            ticket.title.toLowerCase().includes(query) ||
+            ticket.description.toLowerCase().includes(query) ||
+            ticket.tags.some((tag) => tag.toLowerCase().includes(query)) ||
+            ticket.priority.toLowerCase().includes(query),
+        );
       }
+    });
 
-      return filteredTickets.filter(
-        (ticket) =>
-          ticket.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          ticket.description
-            .toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          ticket.tags.some((tag) =>
-            tag.toLowerCase().includes(searchQuery.toLowerCase()),
-          ),
-      );
-    },
-    [tickets, searchQuery],
+    return columnTickets;
+  }, [tickets, searchQuery]);
+
+  const getTicketsForColumn = useCallback(
+    (columnId: string) => filteredTicketsByColumn[columnId] || [],
+    [filteredTicketsByColumn],
   );
 
   const addNewTicket = useCallback((columnId: string) => {
+    const columnTitle =
+      kanbanColumns.find((col) => col.id === columnId)?.title || columnId;
     const newTicket: Ticket = {
-      id: Date.now(), // Simple ID generation
+      id: Date.now(),
       title: "New Ticket",
       description: "",
       agent: null,
       status: columnId,
       priority: "medium",
       creationDate: new Date().toLocaleDateString(),
-      resolutionDate: null,
-      tags: [kanbanColumns.find((col) => col.id === columnId)?.title || ""],
+      resolutionDate:
+        columnId === "resolved" || columnId === "self-resolved"
+          ? new Date().toLocaleDateString()
+          : null,
+      tags: [columnTitle],
     };
 
-    setTickets((prev) => [...prev, newTicket]);
+    setTickets((prev) => [newTicket, ...prev]);
   }, []);
 
   const updateTicket = useCallback((updatedTicket: Ticket) => {
@@ -194,31 +208,13 @@ export function KanbanBoard() {
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const ticket = tickets.find((t) => t.id === Number(active.id));
-    setActiveTicket(ticket || null);
+    if (ticket) {
+      setActiveTicket(ticket);
+    }
   }
 
-  function handleDragOver(event: DragOverEvent) {
-    const { active, over } = event;
-
-    if (!over) return;
-
-    const activeTicketId = Number(active.id);
-    const overColumnId = String(over.id);
-
-    const activeTicket = tickets.find((t) => t.id === activeTicketId);
-
-    if (!activeTicket) return;
-
-    // If we're dragging over a different column, update the ticket's status
-    if (activeTicket.status !== overColumnId) {
-      setTickets((prev) =>
-        prev.map((ticket) =>
-          ticket.id === activeTicketId
-            ? { ...ticket, status: overColumnId }
-            : ticket,
-        ),
-      );
-    }
+  function handleDragOver(_event: DragOverEvent) {
+    // Visual feedback is handled by individual column's isOver state
   }
 
   function handleDragEnd(event: DragEndEvent) {
@@ -226,27 +222,47 @@ export function KanbanBoard() {
 
     setActiveTicket(null);
 
-    if (!over) return;
+    if (!over || !active) return;
 
     const activeTicketId = Number(active.id);
     const overColumnId = String(over.id);
 
-    // Final update to ensure the ticket is in the correct column
-    setTickets((prev) =>
-      prev.map((ticket) =>
-        ticket.id === activeTicketId
-          ? {
-              ...ticket,
-              status: overColumnId,
-              // Update tags to reflect new status
-              tags: [
-                kanbanColumns.find((col) => col.id === overColumnId)?.title ||
-                  overColumnId,
-              ],
-            }
-          : ticket,
-      ),
-    );
+    // Find the active ticket
+    const activeTicket = tickets.find((t) => t.id === activeTicketId);
+    if (!activeTicket) return;
+
+    // Only update if the status actually changed
+    if (activeTicket.status !== overColumnId) {
+      const columnTitle =
+        kanbanColumns.find((col) => col.id === overColumnId)?.title ||
+        overColumnId;
+
+      setTickets((prev) =>
+        prev.map((ticket) =>
+          ticket.id === activeTicketId
+            ? {
+                ...ticket,
+                status: overColumnId,
+                tags: [columnTitle],
+                // Set resolution date for resolved columns
+                resolutionDate:
+                  (overColumnId === "resolved" ||
+                    overColumnId === "self-resolved") &&
+                  !ticket.resolutionDate
+                    ? new Date().toLocaleDateString()
+                    : overColumnId !== "resolved" &&
+                        overColumnId !== "self-resolved"
+                      ? null
+                      : ticket.resolutionDate,
+              }
+            : ticket,
+        ),
+      );
+    }
+  }
+
+  function handleDragCancel(_event: DragCancelEvent) {
+    setActiveTicket(null);
   }
 
   const handleSearch = useCallback((query: string) => {
@@ -254,41 +270,75 @@ export function KanbanBoard() {
   }, []);
 
   const toggleSearch = useCallback(() => {
-    setIsSearchActive(!isSearchActive);
-    if (isSearchActive) {
-      setSearchQuery("");
-    }
-  }, [isSearchActive]);
+    setIsSearchActive((prev) => {
+      if (prev) {
+        setSearchQuery("");
+      }
+      return !prev;
+    });
+  }, []);
+
+  const clearSearch = useCallback(() => {
+    setSearchQuery("");
+    setIsSearchActive(false);
+  }, []);
+
+  const totalTickets = tickets.length;
+  const searchResultsCount = useMemo(() => {
+    if (!searchQuery) return totalTickets;
+    return Object.values(filteredTicketsByColumn).reduce(
+      (acc, tickets) => acc + tickets.length,
+      0,
+    );
+  }, [filteredTicketsByColumn, searchQuery, totalTickets]);
 
   return (
     <DndContext
       sensors={sensors}
+      collisionDetection={closestCorners}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
+      onDragCancel={handleDragCancel}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full bg-background">
         {/* Toolbar */}
-        <div className="bg-card border-b border-border p-4">
+        <div className="bg-card border-b border-border p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {isSearchActive ? (
                 <div className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    placeholder="Search tickets..."
-                    value={searchQuery}
-                    onChange={(e) => handleSearch(e.target.value)}
-                    className="px-3 py-1 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                    autoFocus
-                  />
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input
+                      type="text"
+                      placeholder="Search tickets..."
+                      value={searchQuery}
+                      onChange={(e) => handleSearch(e.target.value)}
+                      className="pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent w-80"
+                      autoFocus
+                    />
+                    {searchQuery && (
+                      <button
+                        onClick={clearSearch}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                  {searchQuery && (
+                    <span className="text-sm text-muted-foreground">
+                      {searchResultsCount} of {totalTickets} tickets
+                    </span>
+                  )}
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={toggleSearch}
                     className="text-muted-foreground hover:text-foreground"
                   >
-                    ✕
+                    Cancel
                   </Button>
                 </div>
               ) : (
@@ -299,7 +349,7 @@ export function KanbanBoard() {
                     onClick={toggleSearch}
                     className="text-muted-foreground hover:text-foreground"
                   >
-                    <Search className="w-4 h-4 mr-1" />
+                    <Search className="w-4 h-4 mr-2" />
                     Search
                   </Button>
 
@@ -308,7 +358,7 @@ export function KanbanBoard() {
                     size="sm"
                     className="text-muted-foreground hover:text-foreground"
                   >
-                    <Filter className="w-4 h-4 mr-1" />
+                    <Filter className="w-4 h-4 mr-2" />
                     Filter
                   </Button>
 
@@ -324,10 +374,14 @@ export function KanbanBoard() {
             </div>
 
             <div className="flex items-center gap-3">
+              <span className="text-sm text-muted-foreground">
+                {totalTickets} total tickets
+              </span>
               <Button
                 variant="ghost"
                 size="sm"
                 className="text-muted-foreground hover:text-foreground"
+                title="Analytics"
               >
                 📊
               </Button>
@@ -335,6 +389,7 @@ export function KanbanBoard() {
                 variant="ghost"
                 size="sm"
                 className="text-muted-foreground hover:text-foreground"
+                title="View options"
               >
                 👁️
               </Button>
@@ -342,6 +397,7 @@ export function KanbanBoard() {
                 variant="ghost"
                 size="sm"
                 className="text-muted-foreground hover:text-foreground"
+                title="Export"
               >
                 ⬆
               </Button>
@@ -351,7 +407,7 @@ export function KanbanBoard() {
 
         {/* Kanban Board */}
         <div className="flex-1 overflow-auto">
-          <div className="flex gap-4 p-4 min-w-max">
+          <div className="flex gap-6 p-6 min-w-max h-full">
             {kanbanColumns.map((column) => (
               <KanbanColumn
                 key={column.id}
@@ -363,13 +419,14 @@ export function KanbanBoard() {
               />
             ))}
 
+            {/* Add Column Button */}
             <div className="min-w-80">
               <Button
                 variant="ghost"
-                className="w-full h-12 border-2 border-dashed border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground"
+                className="w-full h-12 border-2 border-dashed border-border text-muted-foreground hover:text-foreground hover:border-muted-foreground transition-colors"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Add folder
+                Add column
               </Button>
             </div>
           </div>
@@ -378,9 +435,7 @@ export function KanbanBoard() {
         {/* Drag Overlay */}
         <DragOverlay>
           {activeTicket ? (
-            <div className="rotate-5 opacity-80">
-              <KanbanCard ticket={activeTicket} isDragging />
-            </div>
+            <KanbanCard ticket={activeTicket} isDragging />
           ) : null}
         </DragOverlay>
       </div>
