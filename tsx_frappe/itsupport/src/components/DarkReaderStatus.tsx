@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { AlertCircle, Eye, EyeOff, Lightbulb, Monitor } from "lucide-react";
-import { detectDarkReader, monitorDarkReader, getDarkReaderRecommendations } from "../utils/darkReaderCompat";
+import { useEffect, useState } from "react";
+import { Eye, EyeOff, Lightbulb, Monitor } from "lucide-react";
+import {
+  detectDarkReader,
+  monitorDarkReader,
+  getDarkReaderRecommendations,
+} from "../utils/darkReaderCompat";
 import type { DarkReaderInfo } from "../utils/darkReaderCompat";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Button } from "./ui/button";
@@ -45,9 +49,12 @@ export function DarkReaderStatus() {
 
   const getAlertVariant = () => {
     switch (recommendations.type) {
-      case 'warning': return 'destructive';
-      case 'success': return 'default';
-      default: return 'default';
+      case "warning":
+        return "destructive";
+      case "success":
+        return "default";
+      default:
+        return "default";
     }
   };
 
@@ -61,15 +68,20 @@ export function DarkReaderStatus() {
             <h3 className="font-semibold text-foreground">
               Dark Reader Extension Status
             </h3>
-            <span className={`text-xs px-2 py-1 rounded-full ${
-              darkReaderInfo.isEnabled
-                ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200'
+            <span
+              className={`text-xs px-2 py-1 rounded-full ${
+                darkReaderInfo.isEnabled
+                  ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200"
+                  : darkReaderInfo.isInstalled
+                    ? "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200"
+                    : "bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-200"
+              }`}
+            >
+              {darkReaderInfo.isEnabled
+                ? "Active"
                 : darkReaderInfo.isInstalled
-                ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-200'
-                : 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-200'
-            }`}>
-              {darkReaderInfo.isEnabled ? 'Active' :
-               darkReaderInfo.isInstalled ? 'Installed' : 'Not Found'}
+                  ? "Installed"
+                  : "Not Found"}
             </span>
           </div>
           <Button
@@ -85,29 +97,32 @@ export function DarkReaderStatus() {
         {/* Recommendation Alert */}
         <Alert variant={getAlertVariant()}>
           <Lightbulb className="h-4 w-4" />
-          <AlertDescription>
-            {recommendations.message}
-          </AlertDescription>
+          <AlertDescription>{recommendations.message}</AlertDescription>
         </Alert>
 
         {/* Detailed Information */}
         <div className="space-y-2 text-sm text-muted-foreground">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <span className="font-medium text-foreground">Extension Status:</span>
+              <span className="font-medium text-foreground">
+                Extension Status:
+              </span>
               <br />
-              {darkReaderInfo.isInstalled ? 'Detected' : 'Not detected'}
+              {darkReaderInfo.isInstalled ? "Detected" : "Not detected"}
             </div>
             <div>
-              <span className="font-medium text-foreground">Currently Active:</span>
+              <span className="font-medium text-foreground">
+                Currently Active:
+              </span>
               <br />
-              {darkReaderInfo.isEnabled ? 'Yes' : 'No'}
+              {darkReaderInfo.isEnabled ? "Yes" : "No"}
             </div>
           </div>
 
           {darkReaderInfo.version && (
             <div>
-              <span className="font-medium text-foreground">Version:</span> {darkReaderInfo.version}
+              <span className="font-medium text-foreground">Version:</span>{" "}
+              {darkReaderInfo.version}
             </div>
           )}
         </div>
@@ -116,7 +131,9 @@ export function DarkReaderStatus() {
         <div className="flex gap-2 pt-2">
           {darkReaderInfo.isEnabled && (
             <div className="text-xs text-muted-foreground bg-muted p-3 rounded-md">
-              <div className="font-medium text-foreground mb-1">Why use our native themes?</div>
+              <div className="font-medium text-foreground mb-1">
+                Why use our native themes?
+              </div>
               <ul className="space-y-1">
                 <li>• Faster performance (no CSS filters)</li>
                 <li>• Consistent design across all devices</li>
@@ -130,7 +147,8 @@ export function DarkReaderStatus() {
           {!darkReaderInfo.isEnabled && darkReaderInfo.isInstalled && (
             <div className="text-xs text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
               <div className="font-medium mb-1">Perfect!</div>
-              Dark Reader is installed but not active. Our native themes will provide the best experience.
+              Dark Reader is installed but not active. Our native themes will
+              provide the best experience.
             </div>
           )}
         </div>
@@ -147,7 +165,11 @@ export function DarkReaderStatus() {
           </a>
           <a
             href="#theme-demo"
-            onClick={() => window.dispatchEvent(new CustomEvent('navigate', { detail: 'theme-demo' }))}
+            onClick={() =>
+              window.dispatchEvent(
+                new CustomEvent("navigate", { detail: "theme-demo" }),
+              )
+            }
             className="hover:text-foreground hover:underline"
           >
             Try Our Themes

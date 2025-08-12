@@ -1,7 +1,6 @@
 import { Plus, Settings, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { ThemeToggle } from "./theme-toggle";
 
 interface TopBarProps {
   activeTab: string;
@@ -13,7 +12,6 @@ export function TopBar({ activeTab, onTabChange }: TopBarProps) {
     { id: "main-table", label: "Main table", icon: "⋯" },
     { id: "form", label: "Form", icon: null },
     { id: "kanban", label: "Kanban", icon: null },
-    { id: "theme-demo", label: "Theme Demo", icon: null },
   ];
 
   return (
@@ -58,8 +56,6 @@ export function TopBar({ activeTab, onTabChange }: TopBarProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <ThemeToggle />
-
           <Button
             variant="ghost"
             size="sm"

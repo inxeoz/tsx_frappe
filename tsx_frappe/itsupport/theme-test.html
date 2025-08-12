@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Support Dashboard - Theme Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .theme-controls {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .theme-controls button {
+            margin: 5px;
+            padding: 8px 16px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .theme-controls button:hover {
+            background-color: #e9ecef;
+        }
+
+        .theme-controls button.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .dashboard-container {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .api-test {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+
+        .api-test code {
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-success { background-color: #28a745; }
+        .status-warning { background-color: #ffc107; }
+        .status-error { background-color: #dc3545; }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎨 IT Support Dashboard - Theme System Test</h1>
+        <p>This page tests the programmatic theme control functionality of the IT Support Dashboard.</p>
+
+        <div class="theme-controls">
+            <h3>Theme Controls</h3>
+            <p>Click these buttons to test programmatic theme switching:</p>
+
+            <button onclick="setTheme('light')" id="btn-light">☀️ Light</button>
+            <button onclick="setTheme('dark')" id="btn-dark">🌙 Dark</button>
+            <button onclick="setTheme('blue')" id="btn-blue">💧 Blue Ocean</button>
+            <button onclick="setTheme('green')" id="btn-green">🌿 Forest Green</button>
+            <button onclick="setTheme('purple')" id="btn-purple">⚡ Purple Storm</button>
+            <button onclick="setTheme('high-contrast')" id="btn-high-contrast">👁️ High Contrast</button>
+            <button onclick="setTheme('system')" id="btn-system">🖥️ System</button>
+
+            <div style="margin-top: 10px;">
+                <button onclick="toggleTheme()">🔄 Toggle Light/Dark</button>
+                <button onclick="cycleTheme()">🎯 Cycle All Themes</button>
+                <button onclick="setTimeBasedTheme()">⏰ Time-Based Theme</button>
+            </div>
+        </div>
+
+        <div class="api-test">
+            <h3>API Test Status</h3>
+            <div id="api-status">
+                <span class="status-indicator status-warning"></span>
+                <span>Loading dashboard...</span>
+            </div>
+
+            <h4>Available API Methods:</h4>
+            <ul>
+                <li><code>window.ITSupportTheme.setTheme('theme-name')</code> - Set specific theme</li>
+                <li><code>window.ITSupportTheme.toggle()</code> - Toggle between light/dark</li>
+                <li><code>window.ITSupportTheme.cycle()</code> - Cycle through all themes</li>
+                <li><code>window.ITSupportTheme.getCurrentTheme()</code> - Get current theme</li>
+                <li><code>ThemeControl.setTimeBasedTheme()</code> - Apply time-based theme</li>
+                <li><code>ThemeControl.detectSystem()</code> - Detect system preference</li>
+            </ul>
+        </div>
+
+        <div class="dashboard-container">
+            <iframe
+                id="dashboard-frame"
+                src="http://localhost:5173/"
+                style="width: 100%; height: 100%; border: none;"
+                onload="checkThemeAPI()">
+            </iframe>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <h3>Integration Examples</h3>
+
+            <h4>JavaScript Integration:</h4>
+            <pre><code>// Set theme programmatically
+if (window.ITSupportTheme) {
+    window.ITSupportTheme.setTheme('blue');
+}
+
+// Schedule theme change
+setTimeout(() => {
+    window.ITSupportTheme.setTheme('dark');
+}, 5000);
+
+// User preference based theme
+const userTheme = localStorage.getItem('user-theme') || 'system';
+window.ITSupportTheme.setTheme(userTheme);</code></pre>
+
+            <h4>Frappe Integration:</h4>
+            <pre><code>// In Frappe DocType JavaScript
+frappe.ready(function() {
+    if (window.ITSupportTheme) {
+        // Set theme based on user preference
+        const theme = frappe.user.theme || 'system';
+        window.ITSupportTheme.setTheme(theme);
+
+        // Add theme selector to toolbar
+        frappe.ui.toolbar.add_dropdown_button('Theme', 'palette', [
+            {
+                label: 'Light Theme',
+                action: () => window.ITSupportTheme.setTheme('light')
+            },
+            {
+                label: 'Dark Theme',
+                action: () => window.ITSupportTheme.setTheme('dark')
+            }
+        ]);
+    }
+});</code></pre>
+
+            <h4>Department-Based Themes:</h4>
+            <pre><code>// Auto-apply themes based on user department
+const departmentThemes = {
+    'IT': 'blue',
+    'HR': 'green',
+    'Finance': 'purple',
+    'Management': 'high-contrast'
+};
+
+const userDept = getCurrentUserDepartment();
+const theme = departmentThemes[userDept] || 'system';
+window.ITSupportTheme.setTheme(theme);</code></pre>
+        </div>
+    </div>
+
+    <script>
+        let currentTheme = 'system';
+
+        function updateStatus(message, type = 'warning') {
+            const statusEl = document.getElementById('api-status');
+            const indicator = statusEl.querySelector('.status-indicator');
+
+            // Update indicator
+            indicator.className = `status-indicator status-${type}`;
+
+            // Update message
+            statusEl.innerHTML = `
+                <span class="status-indicator status-${type}"></span>
+                <span>${message}</span>
+            `;
+        }
+
+        function updateActiveButton(theme) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.theme-controls button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Add active class to current theme button
+            const activeBtn = document.getElementById(`btn-${theme}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            currentTheme = theme;
+        }
+
+        function checkThemeAPI() {
+            const iframe = document.getElementById('dashboard-frame');
+
+            try {
+                // Wait a moment for the iframe to fully load
+                setTimeout(() => {
+                    const iframeWindow = iframe.contentWindow;
+
+                    if (iframeWindow && iframeWindow.ITSupportTheme) {
+                        updateStatus('✅ Theme API is available and ready!', 'success');
+
+                        // Get current theme
+                        const theme = iframeWindow.ITSupportTheme.getCurrentTheme();
+                        updateActiveButton(theme);
+
+                    } else {
+                        updateStatus('⚠️ Theme API not yet available. The dashboard may still be loading.', 'warning');
+
+                        // Retry after a longer delay
+                        setTimeout(checkThemeAPI, 2000);
+                    }
+                }, 1000);
+
+            } catch (error) {
+                updateStatus('❌ Error accessing iframe. Make sure the dashboard is running on localhost:5173', 'error');
+                console.error('Theme API check failed:', error);
+            }
+        }
+
+        function setTheme(theme) {
+            const iframe = document.getElementById('dashboard-frame');
+
+            try {
+                const iframeWindow = iframe.contentWindow;
+
+                if (iframeWindow && iframeWindow.ITSupportTheme) {
+                    iframeWindow.ITSupportTheme.setTheme(theme);
+                    updateActiveButton(theme);
+                    updateStatus(`✅ Theme changed to: ${theme}`, 'success');
+                } else {
+                    updateStatus('❌ Theme API not available', 'error');
+                }
+            } catch (error) {
+                updateStatus('❌ Error setting theme: ' + error.message, 'error');
+            }
+        }
+
+        function toggleTheme() {
+            const iframe = document.getElementById('dashboard-frame');
+
+            try {
+                const iframeWindow = iframe.contentWindow;
+
+                if (iframeWindow && iframeWindow.ITSupportTheme) {
+                    iframeWindow.ITSupportTheme.toggle();
+
+                    // Get the new theme
+                    setTimeout(() => {
+                        const newTheme = iframeWindow.ITSupportTheme.getCurrentTheme();
+                        updateActiveButton(newTheme);
+                        updateStatus(`✅ Theme toggled to: ${newTheme}`, 'success');
+                    }, 100);
+                } else {
+                    updateStatus('❌ Theme API not available', 'error');
+                }
+            } catch (error) {
+                updateStatus('❌ Error toggling theme: ' + error.message, 'error');
+            }
+        }
+
+        function cycleTheme() {
+            const iframe = document.getElementById('dashboard-frame');
+
+            try {
+                const iframeWindow = iframe.contentWindow;
+
+                if (iframeWindow && iframeWindow.ITSupportTheme) {
+                    iframeWindow.ITSupportTheme.cycle();
+
+                    // Get the new theme
+                    setTimeout(() => {
+                        const newTheme = iframeWindow.ITSupportTheme.getCurrentTheme();
+                        updateActiveButton(newTheme);
+                        updateStatus(`✅ Theme cycled to: ${newTheme}`, 'success');
+                    }, 100);
+                } else {
+                    updateStatus('❌ Theme API not available', 'error');
+                }
+            } catch (error) {
+                updateStatus('❌ Error cycling theme: ' + error.message, 'error');
+            }
+        }
+
+        function setTimeBasedTheme() {
+            const iframe = document.getElementById('dashboard-frame');
+
+            try {
+                const iframeWindow = iframe.contentWindow;
+
+                if (iframeWindow && iframeWindow.ThemeControl) {
+                    iframeWindow.ThemeControl.setTimeBasedTheme();
+
+                    // Get the new theme
+                    setTimeout(() => {
+                        const newTheme = iframeWindow.ITSupportTheme.getCurrentTheme();
+                        updateActiveButton(newTheme);
+
+                        const hour = new Date().getHours();
+                        const timeOfDay = (hour >= 6 && hour < 18) ? 'day' : 'night';
+                        updateStatus(`✅ Time-based theme applied (${timeOfDay}): ${newTheme}`, 'success');
+                    }, 100);
+                } else {
+                    updateStatus('❌ ThemeControl API not available', 'error');
+                }
+            } catch (error) {
+                updateStatus('❌ Error setting time-based theme: ' + error.message, 'error');
+            }
+        }
+
+        // Auto-check API availability when page loads
+        window.addEventListener('load', () => {
+            setTimeout(checkThemeAPI, 500);
+        });
+
+        // Keyboard shortcuts for quick testing
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch (e.key) {
+                    case '1':
+                        e.preventDefault();
+                        setTheme('light');
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        setTheme('dark');
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        setTheme('blue');
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        setTheme('green');
+                        break;
+                    case 't':
+                        e.preventDefault();
+                        toggleTheme();
+                        break;
+                    case 'c':
+                        e.preventDefault();
+                        cycleTheme();
+                        break;
+                }
+            }
+        });
+
+        // Show keyboard shortcuts help
+        console.log(`
+🎨 IT Support Dashboard Theme Test - Keyboard Shortcuts:
+Ctrl/Cmd + 1: Light theme
+Ctrl/Cmd + 2: Dark theme
+Ctrl/Cmd + 3: Blue theme
+Ctrl/Cmd + 4: Green theme
+Ctrl/Cmd + T: Toggle theme
+Ctrl/Cmd + C: Cycle themes
+
+You can also use the buttons on the page or call the API directly in the console:
+window.ITSupportTheme.setTheme('blue')
+window.ITSupportTheme.toggle()
+window.ITSupportTheme.cycle()
+        `);
+    </script>
+</body>
+</html>

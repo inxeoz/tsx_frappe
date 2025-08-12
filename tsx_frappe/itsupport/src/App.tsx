@@ -2,13 +2,12 @@ import { useState } from "react";
 import { TopBar } from "./components/TopBar";
 import { TicketDashboard } from "./components/TicketDashboard";
 import { KanbanBoard } from "./components/KanbanBoard";
-import { ThemeDemo } from "./components/ThemeDemo";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("main-table");
 
   return (
-    <div className="it-support-dashboard h-screen bg-background text-foreground flex flex-col">
+    <div className="it-support-dashboard dark h-screen bg-background text-foreground flex flex-col">
       <TopBar activeTab={activeTab} onTabChange={setActiveTab} />
       <main className="flex-1 overflow-auto m-5">
         {activeTab === "main-table" && <TicketDashboard />}
@@ -19,7 +18,6 @@ export default function App() {
           </div>
         )}
         {activeTab === "kanban" && <KanbanBoard />}
-        {activeTab === "theme-demo" && <ThemeDemo />}
       </main>
     </div>
   );
