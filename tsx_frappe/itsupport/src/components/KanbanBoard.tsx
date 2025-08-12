@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import { Plus, Search, Filter, MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
+import { Toolbar } from "./ui/toolbar";
 import { KanbanColumn } from "./KanbanColumn";
 import {
   DndContext,
@@ -292,6 +293,69 @@ export function KanbanBoard() {
     );
   }, [filteredTicketsByColumn, searchQuery, totalTickets]);
 
+  const toolbarSections = [
+    {
+      id: "left-actions",
+      align: "left" as const,
+      actions: isSearchActive
+        ? [
+            {
+              id: "search-input",
+              text: "",
+              onClick: () => {},
+              className: "p-0 hover:bg-transparent",
+            },
+          ]
+        : [
+            {
+              id: "search",
+              icon: Search,
+              text: "Search",
+              onClick: toggleSearch,
+            },
+            {
+              id: "filter",
+              icon: Filter,
+              text: "Filter",
+              onClick: () => console.log("Filter clicked"),
+            },
+            {
+              id: "more",
+              icon: MoreHorizontal,
+              onClick: () => console.log("More options clicked"),
+            },
+          ],
+    },
+    {
+      id: "right-actions",
+      align: "right" as const,
+      actions: [
+        {
+          id: "total-tickets",
+          text: `${totalTickets} total tickets`,
+          onClick: () => {},
+          className:
+            "text-sm text-muted-foreground hover:bg-transparent cursor-default",
+        },
+        {
+          id: "analytics",
+          icon: "📊",
+          onClick: () => console.log("Analytics clicked"),
+        },
+        {
+          id: "view-options",
+          icon: "👁️",
+          onClick: () => console.log("View options clicked"),
+        },
+        {
+          id: "export",
+          icon: "⬆",
+          onClick: () => console.log("Export clicked"),
+        },
+      ],
+    },
+  ];
+
   return (
     <DndContext
       sensors={sensors}
@@ -303,107 +367,44 @@ export function KanbanBoard() {
     >
       <div className="flex flex-col h-full bg-background">
         {/* Toolbar */}
-        <div className="bg-card border-b border-border p-4 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              {isSearchActive ? (
-                <div className="flex items-center gap-2">
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <input
-                      type="text"
-                      placeholder="Search tickets..."
-                      value={searchQuery}
-                      onChange={(e) => handleSearch(e.target.value)}
-                      className="pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent w-80"
-                      autoFocus
-                    />
-                    {searchQuery && (
-                      <button
-                        onClick={clearSearch}
-                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      >
-                        ×
-                      </button>
-                    )}
-                  </div>
-                  {searchQuery && (
-                    <span className="text-sm text-muted-foreground">
-                      {searchResultsCount} of {totalTickets} tickets
-                    </span>
-                  )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={toggleSearch}
-                    className="text-muted-foreground hover:text-foreground"
+        <Toolbar sections={toolbarSections} className="shadow-sm">
+          {isSearchActive && (
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder="Search tickets..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className="pl-10 pr-4 py-2 border border-border rounded-md bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent w-80"
+                  autoFocus
+                />
+                {searchQuery && (
+                  <button
+                    onClick={clearSearch}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                   >
-                    Cancel
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={toggleSearch}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <Search className="w-4 h-4 mr-2" />
-                    Search
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <Filter className="w-4 h-4 mr-2" />
-                    Filter
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <MoreHorizontal className="w-4 h-4" />
-                  </Button>
-                </>
+                    ×
+                  </button>
+                )}
+              </div>
+              {searchQuery && (
+                <span className="text-sm text-muted-foreground">
+                  {searchResultsCount} of {totalTickets} tickets
+                </span>
               )}
-            </div>
-
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-muted-foreground">
-                {totalTickets} total tickets
-              </span>
               <Button
                 variant="ghost"
                 size="sm"
+                onClick={toggleSearch}
                 className="text-muted-foreground hover:text-foreground"
-                title="Analytics"
               >
-                📊
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-muted-foreground hover:text-foreground"
-                title="View options"
-              >
-                👁️
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-muted-foreground hover:text-foreground"
-                title="Export"
-              >
-                ⬆
+                Cancel
               </Button>
             </div>
-          </div>
-        </div>
+          )}
+        </Toolbar>
 
         {/* Kanban Board */}
         <div className="flex-1 overflow-auto">

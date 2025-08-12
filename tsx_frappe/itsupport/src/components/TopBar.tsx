@@ -12,6 +12,7 @@ export function TopBar({ activeTab, onTabChange }: TopBarProps) {
     { id: "main-table", label: "Main table", icon: "⋯" },
     { id: "form", label: "Form", icon: null },
     { id: "kanban", label: "Kanban", icon: null },
+    { id: "ToolbarExamples", label: "Toolbar Examples", icon: null },
   ];
 
   return (

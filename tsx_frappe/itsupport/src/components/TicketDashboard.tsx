@@ -1,5 +1,6 @@
 import { Plus, Search, Filter, MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
+import { Toolbar } from "./ui/toolbar";
 import { TicketGroup } from "./TicketGroup";
 
 const mockTicketData = [
@@ -86,65 +87,62 @@ const mockTicketData = [
 ];
 
 export function TicketDashboard() {
+  const toolbarSections = [
+    {
+      id: "left-actions",
+      align: "left" as const,
+      actions: [
+        {
+          id: "new-ticket",
+          icon: Plus,
+          text: "New ticket",
+          variant: "outline" as const,
+          className:
+            "bg-accent border-border text-accent-foreground hover:bg-accent/80",
+          onClick: () => console.log("New ticket clicked"),
+        },
+        {
+          id: "search",
+          icon: Search,
+          text: "Search",
+          onClick: () => console.log("Search clicked"),
+        },
+        {
+          id: "filter",
+          icon: Filter,
+          text: "Filter",
+          onClick: () => console.log("Filter clicked"),
+        },
+        {
+          id: "group-by",
+          icon: "📊",
+          text: "Group by",
+          onClick: () => console.log("Group by clicked"),
+        },
+        {
+          id: "more",
+          icon: MoreHorizontal,
+          onClick: () => console.log("More options clicked"),
+        },
+      ],
+    },
+    {
+      id: "right-actions",
+      align: "right" as const,
+      actions: [
+        {
+          id: "export",
+          icon: "⬆",
+          onClick: () => console.log("Export clicked"),
+        },
+      ],
+    },
+  ];
+
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="bg-card border-b border-border p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="outline"
-              size="sm"
-              className="bg-accent border-border text-accent-foreground hover:bg-accent/80"
-            >
-              <Plus className="w-4 h-4 mr-1" />
-              New ticket
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Search className="w-4 h-4 mr-1" />
-              Search
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Filter className="w-4 h-4 mr-1" />
-              Filter
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              📊 Group by
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <MoreHorizontal className="w-4 h-4" />
-            </Button>
-          </div>
-
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-muted-foreground hover:text-foreground"
-          >
-            ⬆
-          </Button>
-        </div>
-      </div>
+      <Toolbar sections={toolbarSections} />
 
       {/* Table Header */}
       <div className="bg-muted border-b border-border px-6 py-3">

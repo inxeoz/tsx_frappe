@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TopBar } from "./components/TopBar";
 import { TicketDashboard } from "./components/TicketDashboard";
 import { KanbanBoard } from "./components/KanbanBoard";
+import { ToolbarExamples } from "./components/ToolbarExamples";
 
 export default function App() {
   const [activeTab, setActiveTab] = useState("main-table");
@@ -18,6 +19,8 @@ export default function App() {
           </div>
         )}
         {activeTab === "kanban" && <KanbanBoard />}
+
+        {activeTab === "ToolbarExamples" && <ToolbarExamples />}
       </main>
     </div>
   );
