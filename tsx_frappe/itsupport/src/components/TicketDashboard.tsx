@@ -89,13 +89,13 @@ export function TicketDashboard() {
   return (
     <div className="flex flex-col h-full">
       {/* Toolbar */}
-      <div className="bg-slate-800 border-b border-slate-700 p-4">
+      <div className="bg-card border-b border-border p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button
               variant="outline"
               size="sm"
-              className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600"
+              className="bg-accent border-border text-accent-foreground hover:bg-accent/80"
             >
               <Plus className="w-4 h-4 mr-1" />
               New ticket
@@ -104,7 +104,7 @@ export function TicketDashboard() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-slate-300 hover:text-white"
+              className="text-muted-foreground hover:text-foreground"
             >
               <Search className="w-4 h-4 mr-1" />
               Search
@@ -113,7 +113,7 @@ export function TicketDashboard() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-slate-300 hover:text-white"
+              className="text-muted-foreground hover:text-foreground"
             >
               <Filter className="w-4 h-4 mr-1" />
               Filter
@@ -122,7 +122,7 @@ export function TicketDashboard() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-slate-300 hover:text-white"
+              className="text-muted-foreground hover:text-foreground"
             >
               📊 Group by
             </Button>
@@ -130,7 +130,7 @@ export function TicketDashboard() {
             <Button
               variant="ghost"
               size="sm"
-              className="text-slate-300 hover:text-white"
+              className="text-muted-foreground hover:text-foreground"
             >
               <MoreHorizontal className="w-4 h-4" />
             </Button>
@@ -139,7 +139,7 @@ export function TicketDashboard() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-slate-300 hover:text-white"
+            className="text-muted-foreground hover:text-foreground"
           >
             ⬆
           </Button>
@@ -147,8 +147,8 @@ export function TicketDashboard() {
       </div>
 
       {/* Table Header */}
-      <div className="bg-slate-850 border-b border-slate-700 px-6 py-3">
-        <div className="grid grid-cols-6 gap-4 text-sm text-slate-400">
+      <div className="bg-muted border-b border-border px-6 py-3">
+        <div className="grid grid-cols-6 gap-4 text-sm text-muted-foreground">
           <div></div>
           <div>Agent</div>
           <div>Status</div>
@@ -168,7 +168,7 @@ export function TicketDashboard() {
           <Button
             variant="ghost"
             size="sm"
-            className="text-slate-400 hover:text-white"
+            className="text-muted-foreground hover:text-foreground"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add new group

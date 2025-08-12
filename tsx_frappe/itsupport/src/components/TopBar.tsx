@@ -1,6 +1,7 @@
-import { Plus, Settings, User } from 'lucide-react';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
+import { Plus, Settings, User } from "lucide-react";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import { ThemeToggle } from "./theme-toggle";
 
 interface TopBarProps {
   activeTab: string;
@@ -9,13 +10,14 @@ interface TopBarProps {
 
 export function TopBar({ activeTab, onTabChange }: TopBarProps) {
   const tabs = [
-    { id: 'main-table', label: 'Main table', icon: '⋯' },
-    { id: 'form', label: 'Form', icon: null },
-    { id: 'kanban', label: 'Kanban', icon: null },
+    { id: "main-table", label: "Main table", icon: "⋯" },
+    { id: "form", label: "Form", icon: null },
+    { id: "kanban", label: "Kanban", icon: null },
+    { id: "theme-demo", label: "Theme Demo", icon: null },
   ];
 
   return (
-    <header className="bg-slate-800 border-b border-slate-700 px-6 py-3 flex items-center justify-between">
+    <header className="bg-card border-b border-border px-6 py-3 flex items-center justify-between">
       {/* Left side - Navigation tabs */}
       <div className="flex items-center gap-1">
         {tabs.map((tab) => (
@@ -24,19 +26,19 @@ export function TopBar({ activeTab, onTabChange }: TopBarProps) {
             onClick={() => onTabChange(tab.id)}
             className={`px-4 py-2 rounded-md transition-colors flex items-center gap-2 text-sm ${
               activeTab === tab.id
-                ? 'bg-slate-700 text-white'
-                : 'text-slate-400 hover:text-white hover:bg-slate-700'
+                ? "bg-accent text-accent-foreground"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent"
             }`}
           >
             {tab.icon && <span>{tab.icon}</span>}
             {tab.label}
           </button>
         ))}
-        
+
         <Button
           variant="ghost"
           size="sm"
-          className="text-slate-400 hover:text-white ml-2"
+          className="text-muted-foreground hover:text-foreground ml-2"
         >
           <Plus className="w-4 h-4 mr-1" />
           Add View
@@ -46,17 +48,26 @@ export function TopBar({ activeTab, onTabChange }: TopBarProps) {
       {/* Right side - Branding and controls */}
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-4">
-          <h1 className="text-xl font-medium text-white">MYTICK</h1>
-          <Badge variant="secondary" className="bg-emerald-600 text-white border-none">
+          <h1 className="text-xl font-medium text-foreground">MYTICK</h1>
+          <Badge
+            variant="secondary"
+            className="bg-emerald-600 text-white border-none"
+          >
             In Portal
           </Badge>
         </div>
-        
+
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="text-slate-300 hover:text-white">
+          <ThemeToggle />
+
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-foreground"
+          >
             <Settings className="w-4 h-4" />
           </Button>
-          
+
           <div className="w-8 h-8 bg-emerald-600 rounded-full flex items-center justify-center">
             <User className="w-4 h-4 text-white" />
           </div>

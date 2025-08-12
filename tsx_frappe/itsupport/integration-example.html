@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Support Dashboard - Integration Example</title>
+    <style>
+        /* Simulate existing application styles that shouldn't be affected */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .existing-app {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .existing-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .dashboard-container {
+            height: 600px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #1e293b; /* Match our dashboard background */
+        }
+
+        /* These styles demonstrate that our scoped CSS won't interfere */
+        .existing-app * {
+            box-sizing: content-box; /* Different from our component */
+        }
+
+        .existing-app h1 {
+            color: #ff6b6b; /* This shouldn't affect our dashboard */
+        }
+    </style>
+</head>
+<body>
+    <div class="existing-app">
+        <h1>Existing Application Interface</h1>
+        <p>This represents your existing application (like Frappe). Notice how the styles here are completely separate from the dashboard below.</p>
+        <button class="existing-button">Existing App Button</button>
+        <p>The IT Support Dashboard below is completely isolated and won't affect these styles.</p>
+    </div>
+
+    <!-- This is where you would mount the IT Support Dashboard -->
+    <div class="existing-app">
+        <h2>IT Support Dashboard Integration</h2>
+        <div id="it-support-dashboard-root" class="dashboard-container">
+            <!-- The React component will be mounted here -->
+            <!-- All styles are scoped to .it-support-dashboard class -->
+        </div>
+    </div>
+
+    <div class="existing-app">
+        <h2>Integration Instructions</h2>
+        <ol>
+            <li><strong>Include the CSS:</strong> Add the built CSS file to your page</li>
+            <li><strong>Include the JS:</strong> Add the built JavaScript file to your page</li>
+            <li><strong>Create a container:</strong> Add a div with any ID you want</li>
+            <li><strong>Mount the component:</strong> Call the mount function</li>
+        </ol>
+
+        <h3>Example Integration Code:</h3>
+        <pre style="background: #f8f9fa; padding: 15px; border-radius: 4px; overflow-x: auto;"><code>&lt;!-- 1. Include the built files --&gt;
+&lt;link rel="stylesheet" href="/static_ui/main.css"&gt;
+&lt;script src="/static_ui/main.js"&gt;&lt;/script&gt;
+
+&lt;!-- 2. Create container --&gt;
+&lt;div id="my-dashboard-container" style="height: 600px;"&gt;&lt;/div&gt;
+
+&lt;!-- 3. Mount the component --&gt;
+&lt;script&gt;
+    // Wait for the script to load
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('my-dashboard-container');
+
+        // Mount the React component
+        // The mountReact function is exported from main.js
+        if (typeof mountReact === 'function') {
+            mountReact(container);
+        }
+    });
+&lt;/script&gt;</code></pre>
+
+        <h3>Frappe Integration Example:</h3>
+        <pre style="background: #f8f9fa; padding: 15px; border-radius: 4px; overflow-x: auto;"><code># In your Frappe app's hooks.py
+app_include_css = [
+    "/assets/tsx_frappe/static_ui/main.css"
+]
+
+app_include_js = [
+    "/assets/tsx_frappe/static_ui/main.js"
+]
+
+# In your Frappe page/doctype
+frappe.ui.Page({
+    title: "IT Support Dashboard",
+    content: `
+        &lt;div id="it-support-root" style="height: calc(100vh - 150px);"&gt;&lt;/div&gt;
+        &lt;script&gt;
+            if (typeof mountReact === 'function') {
+                mountReact(document.getElementById('it-support-root'));
+            }
+        &lt;/script&gt;
+    `
+});</code></pre>
+
+        <h3>Key Benefits of This Approach:</h3>
+        <ul>
+            <li>✅ <strong>No CSS conflicts:</strong> All styles are scoped to .it-support-dashboard</li>
+            <li>✅ <strong>No global pollution:</strong> CSS variables are contained within the component</li>
+            <li>✅ <strong>Tailwind scoping:</strong> All Tailwind classes only apply within the component</li>
+            <li>✅ <strong>Easy integration:</strong> Just include CSS/JS and call mountReact()</li>
+            <li>✅ <strong>Isolation:</strong> Component is completely isolated from parent styles</li>
+            <li>✅ <strong>Self-contained:</strong> No external dependencies on the parent application</li>
+        </ul>
+
+        <h3>Testing Integration Safety:</h3>
+        <p>You can verify that the integration is safe by:</p>
+        <ul>
+            <li>Checking that existing styles aren't affected</li>
+            <li>Ensuring the dashboard renders correctly in any container</li>
+            <li>Confirming that CSS variables don't leak outside the component</li>
+            <li>Testing that scrollbar styles only apply to the dashboard</li>
+        </ul>
+    </div>
+
+    <script>
+        // This script demonstrates how styles are isolated
+        console.log('Existing app JavaScript works normally');
+
+        // You could add the dashboard mounting code here:
+        // const container = document.getElementById('it-support-dashboard-root');
+        // if (typeof mountReact === 'function') {
+        //     mountReact(container);
+        // }
+    </script>
+</body>
+</html>

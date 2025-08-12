@@ -1,11 +1,14 @@
 import React, { StrictMode } from "react";
 import ReactDOM, { createRoot } from "react-dom/client";
 import App from "./App.tsx";
+import { ThemeProvider } from "./components/theme-provider";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>,
 );
 
@@ -17,7 +20,9 @@ export function mountReact(target: HTMLElement) {
   }
   root.render(
     <StrictMode>
-      <App />
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <App />
+      </ThemeProvider>
     </StrictMode>,
   );
 }

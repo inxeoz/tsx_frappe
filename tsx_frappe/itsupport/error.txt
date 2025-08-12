@@ -1,0 +1,51 @@
+i am creating a button side of profile clliking on that would change theme (cenv) [inxeoz@inxeoz-hplaptop15sfq5xxx itsupport]$ npm run build
+
+> it-support-dashboard@0.0.0 build
+> tsc && vite build
+
+tsconfig.json:30:18 - error TS6310: Referenced project '/home/inxeoz/work/prob/apps/tsx_frappe/tsx_frappe/itsupport/tsconfig.node.json' may not disable emit.
+
+30   "references": [{ "path": "./tsconfig.node.json" }]
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Found 1 error in tsconfig.json:30
+
+(cenv) [inxeoz@inxeoz-hplaptop15sfq5xxx itsupport]$ cat ^C
+(cenv) [inxeoz@inxeoz-hplaptop15sfq5xxx itsupport]$ npm run build
+
+> it-support-dashboard@0.0.0 build
+> tsc && vite build
+
+vite v6.3.5 building for production...
+✓ 1633 modules transformed.
+../public/static_ui/main.css   64.03 kB │ gzip:  10.82 kB
+../public/static_ui/main.js   849.95 kB │ gzip: 196.56 kB
+✓ built in 2.44s
+(cenv) [inxeoz@inxeoz-hplaptop15sfq5xxx itsupport]$ npm run build
+
+> it-support-dashboard@0.0.0 build
+> tsc && vite build
+
+vite v6.3.5 building for production...
+✓ 1633 modules transformed.
+../public/static_ui/main.css   82.96 kB │ gzip:  11.93 kB
+../public/static_ui/main.js   849.97 kB │ gzip: 196.57 kB
+✓ built in 2.84s
+(cenv) [inxeoz@inxeoz-hplaptop15sfq5xxx itsupport]$ npm run build
+
+> it-support-dashboard@0.0.0 build
+> tsc && vite build
+
+src/components/theme-provider.tsx:13:11 - error TS2322: Type '{ children: ReactNode; attribute?: string | undefined; defaultTheme?: string | undefined; enableSystem?: boolean | undefined; }' is not assignable to type 'ThemeProviderProps'.
+  Types of property 'attribute' are incompatible.
+    Type 'string | undefined' is not assignable to type 'Attribute | Attribute[] | undefined'.
+      Type 'string' is not assignable to type 'Attribute | Attribute[] | undefined'.
+
+13   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
+             ~~~~~~~~~~~~~~~~~~
+
+
+Found 1 error in src/components/theme-provider.tsx:13
+
+(cenv) [inxeoz@inxeoz-hplaptop15sfq5xxx itsupport]$
